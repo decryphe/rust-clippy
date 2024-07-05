@@ -104,6 +104,45 @@ impl<'de> Deserialize<'de> for MacroMatcher {
     }
 }
 
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceItemOrderingEnableFor {
+    Enum,
+    Struct,
+    Trait,
+    Impl,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceItemOrderingModuleItemKind {
+    Mod,
+    ForeignMod,
+    Use,
+    Macro,
+    GlobalAsm,
+    Static,
+    Const,
+    TyAlias,
+    OpaqueTy,
+    Enum,
+    Struct,
+    Union,
+    Trait,
+    TraitAlias,
+    Impl,
+    Fn,
+    ModTests,
+}
+
+#[derive(Clone, Debug, Deserialize, PartialEq, PartialOrd, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SourceItemOrderingTraitAssocItemKind {
+    Const,
+    Type,
+    Fn,
+}
+
 // these impls are never actually called but are used by the various config options that default to
 // empty lists
 macro_rules! unimplemented_serialize {

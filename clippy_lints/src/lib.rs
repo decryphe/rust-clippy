@@ -326,6 +326,7 @@ mod single_range_in_vec_init;
 mod size_of_in_element_count;
 mod size_of_ref;
 mod slow_vector_initialization;
+mod source_item_ordering;
 mod std_instead_of_core;
 mod string_patterns;
 mod strings;
@@ -606,6 +607,9 @@ pub fn register_lints(store: &mut rustc_lint::LintStore, conf: &'static Conf) {
         blacklisted_names: _,
         cyclomatic_complexity_threshold: _,
         warn_unsafe_macro_metavars_in_private_macros,
+        ref source_item_order_groupings,
+        ref source_item_order_assoc_item_kinds_order,
+        ref enable_source_item_ordering_for,
     } = *conf;
     let msrv = || msrv.clone();
 
@@ -1171,6 +1175,13 @@ pub fn register_lints(store: &mut rustc_lint::LintStore, conf: &'static Conf) {
     });
     store.register_late_pass(move |_| Box::new(string_patterns::StringPatterns::new(msrv())));
     store.register_early_pass(|| Box::new(field_scoped_visibility_modifiers::FieldScopedVisibilityModifiers));
+    store.register_late_pass(move |_| {
+        Box::new(source_item_ordering::SourceItemOrdering::new(
+            source_item_order_assoc_item_kinds_order.clone(),
+            enable_source_item_ordering_for.clone(),
+            source_item_order_groupings.clone(),
+        ))
+    });
     // add lints here, do not remove this comment, it's used in `new_lint`
 }
 

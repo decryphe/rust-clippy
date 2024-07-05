@@ -1,5 +1,5 @@
 use crate::msrvs::Msrv;
-use crate::types::{DisallowedPath, MacroMatcher, MatchLintBehaviour, PubUnderscoreFieldsBehaviour, Rename};
+use crate::types::{DisallowedPath, MacroMatcher, MatchLintBehaviour, PubUnderscoreFieldsBehaviour, Rename, SourceItemOrderingEnableFor, SourceItemOrderingModuleItemKind, SourceItemOrderingTraitAssocItemKind};
 use crate::ClippyConfiguration;
 use rustc_data_structures::fx::FxHashSet;
 use rustc_errors::Applicability;
@@ -42,6 +42,28 @@ const DEFAULT_ALLOWED_IDENTS_BELOW_MIN_CHARS: &[&str] = &["i", "j", "x", "y", "z
 const DEFAULT_ALLOWED_PREFIXES: &[&str] = &["to", "as", "into", "from", "try_into", "try_from"];
 const DEFAULT_ALLOWED_TRAITS_WITH_RENAMED_PARAMS: &[&str] =
     &["core::convert::From", "core::convert::TryFrom", "core::str::FromStr"];
+const DEFAULT_SOURCE_ITEM_ORDERING_GROUPS: &[(&str, &[SourceItemOrderingModuleItemKind])] = {
+    use SourceItemOrderingModuleItemKind::*;
+    &[
+        ("modules", &[Mod, ForeignMod]),
+        ("use", &[Use]),
+        ("macro", &[Macro]),
+        ("global_asm", &[GlobalAsm]),
+        ("upper_snake_case", &[Static, Const]),
+        ("pascal_case", &[TyAlias, OpaqueTy, Enum, Struct, Union, Trait, TraitAlias, Impl]),
+        ("lower_snake_case", &[Fn]),
+        ("mod_tests", &[ModTests]),
+    ]
+};
+
+const DEFAULT_SOURCE_ITEM_ORDERING_ASSOC_ITEM_KINDS_ORDER: &[SourceItemOrderingTraitAssocItemKind] = {
+    use SourceItemOrderingTraitAssocItemKind::*;
+    &[Const, Type, Fn]
+};
+const DEFAULT_ENABLE_SOURCE_ITEM_ORDERING_FOR: &[SourceItemOrderingEnableFor] = {
+    use SourceItemOrderingEnableFor::*;
+    &[Enum, Impl, Struct, Trait]
+};
 
 /// Conf with parse errors
 #[derive(Default)]
@@ -640,6 +662,14 @@ define_Conf! {
     ///
     /// Whether to also emit warnings for unsafe blocks with metavariable expansions in **private** macros.
     (warn_unsafe_macro_metavars_in_private_macros: bool = false),
+    /// Lint: SOURCE_ITEM_ORDERING.
+    (source_item_order_groupings: Vec<(String, Vec<SourceItemOrderingModuleItemKind>)> = DEFAULT_SOURCE_ITEM_ORDERING_GROUPS.iter().map(
+        |item| (ToString::to_string(item.0), item.1.to_vec())
+    ).collect()),
+    /// Lint: SOURCE_ITEM_ORDERING.
+    (source_item_order_assoc_item_kinds_order: Vec<SourceItemOrderingTraitAssocItemKind> = DEFAULT_SOURCE_ITEM_ORDERING_ASSOC_ITEM_KINDS_ORDER.to_vec()),
+    /// Lint: SOURCE_ITEM_ORDERING.
+    (enable_source_item_ordering_for: Vec<SourceItemOrderingEnableFor> = DEFAULT_ENABLE_SOURCE_ITEM_ORDERING_FOR.to_vec()),
 }
 
 /// Search for the configuration file.

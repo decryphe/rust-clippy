@@ -1,0 +1,76 @@
+error: incorrect ordering of items (must be alphabetically ordered)
+  --> tests/ui/source_item_ordering.rs:13:5
+   |
+LL |     B,
+   |     ^
+   |
+note: should be placed before `C`
+  --> tests/ui/source_item_ordering.rs:12:5
+   |
+LL |     C,
+   |     ^
+   = note: `-D clippy::source-item-ordering` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::source_item_ordering)]`
+
+error: incorrect ordering of items (must be alphabetically ordered)
+  --> tests/ui/source_item_ordering.rs:25:5
+   |
+LL |     b: bool,
+   |     ^
+   |
+note: should be placed before `c`
+  --> tests/ui/source_item_ordering.rs:24:5
+   |
+LL |     c: bool,
+   |     ^
+
+error: incorrect ordering of items (must be alphabetically ordered)
+  --> tests/ui/source_item_ordering.rs:33:5
+   |
+LL |     b: bool,
+   |     ^
+   |
+note: should be placed before `c`
+  --> tests/ui/source_item_ordering.rs:32:5
+   |
+LL |     c: bool,
+   |     ^
+
+error: incorrect ordering of items (must be alphabetically ordered)
+  --> tests/ui/source_item_ordering.rs:52:11
+   |
+LL |     const B: bool;
+   |           ^
+   |
+note: should be placed before `C`
+  --> tests/ui/source_item_ordering.rs:51:11
+   |
+LL |     const C: bool;
+   |           ^
+
+error: incorrect ordering of items (must be alphabetically ordered)
+  --> tests/ui/source_item_ordering.rs:58:8
+   |
+LL |     fn b();
+   |        ^
+   |
+note: should be placed before `c`
+  --> tests/ui/source_item_ordering.rs:57:8
+   |
+LL |     fn c();
+   |        ^
+
+error: incorrect ordering of trait items (defined order: [Const, Type, Fn])
+  --> tests/ui/source_item_ordering.rs:64:5
+   |
+LL |     const A: bool;
+   |     ^^^^^^^^^^^^^^
+   |
+note: should be placed before `SomeType`
+  --> tests/ui/source_item_ordering.rs:62:5
+   |
+LL |     type SomeType;
+   |     ^^^^^^^^^^^^^^
+
+error: aborting due to 6 previous errors
+
